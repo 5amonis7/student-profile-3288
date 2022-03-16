@@ -9,21 +9,19 @@ function App() {
 
   window.onload = Request()
 
-  const [ test, setTest ] = useState({
-    tags: [],
-    data: []
-  })
-
-  console.log(test.tags)
-
   // Value of the name input 
-  const [ searchTerm, setSearchTerm ] = useState('')
+  const [ nameTerm, setNameTerm ] = useState('')
+
+  // value of the tags input 
+  const [ tagsTerm, setTagsTerm ] = useState('')
 
   // All the current tags
   const [ tags, setTags ] = useState([])
 
   // Holding info avout each person
   const [ data, setData ] = useState([])
+
+  
 
 
   // Requesting the API info
@@ -46,29 +44,39 @@ function updateTags(e){
 }
 
 // Changing the value of the search term used to filter by name 
-  function update(item){
-    setSearchTerm(item)
+  function updateName(item){
+    setNameTerm(item)
   }
+
+  // changing the value of the search term used to filter by tags 
+  function updateTag(item){
+    setTagsTerm(item)
+  }
+
+
   return (
     <div className="App">
       <div id="container" >
         <div id="collection" >
-          <SearchName update={update} />
-          <SearchTag update={update} />
+
+          {/* Name search input */}
+          <SearchName update={updateName} />
+
+          {/* Tag search input */}
+          <SearchTag update={updateTag} />
           <div id="students">
             {data.filter(val => {
-              if(searchTerm === ""){
+              if(nameTerm === ""){
                 return val
               }else if(
-                // Searchng for Firstname
-                val.firstName.toLowerCase().includes(searchTerm.toLocaleLowerCase()) || 
+                // Searching for Firstname
+                val.firstName.toLowerCase().includes(nameTerm.toLowerCase()) || 
                 // Searching for Lastname
-                val.lastName.toLowerCase().includes(searchTerm.toLowerCase())
-
+                val.lastName.toLowerCase().includes(nameTerm.toLowerCase())
                 ){
                 return val
-              }
-            }).map((student) => <Card updateTags={updateTags} students={student} key={student.id} />)}
+              }}).map((student) => <Card updateTags={updateTags} students={student} key={student.id} />)}
+
           </div>
         </div>
       </div>

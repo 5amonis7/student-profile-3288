@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import OnEvent from "react-onevent";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
@@ -34,7 +35,6 @@ const Card = ({ students, updateTags }) => {
         const { value } = e.target;
         if(e.key == 'Enter'){
             setTags(prevTags => [...prevTags, value])
-            e.target.value = ''
             updateTags(value)
         }
     }
@@ -61,11 +61,15 @@ const Card = ({ students, updateTags }) => {
 
                 {/* Looping through each tag */}
                 <div id="tags" className="spacing" >
-                    {tags.map((tag, index) => {
-                        return <p key={index}>{tag}</p>
-                    })}
+                    {
+                    tags &&
+                    tags.map((tag, index) => <p key={index}>{tag}</p>)}
                 </div>
-                <input onKeyPress={addTag} className="tag" type="text" placeholder="Add a tag" />
+
+                <OnEvent enter={e => setTags(prevTags => [...prevTags, e.target.value])} >
+                    <input onKeyPress={addTag} className="tag" type="text" placeholder="Add a tag" />
+                </OnEvent>
+
             </div>
 
             <FontAwesomeIcon id="icon" onClick={changeStatus} icon={status ? faPlus: faMinus} />

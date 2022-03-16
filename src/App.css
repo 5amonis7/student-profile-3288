@@ -95,7 +95,7 @@
   border-radius: 5px;
 }
 
-/* Search by name */
+/* Search */
 
 .filter {
   width: 98%;
@@ -114,8 +114,4 @@
 
 .search::placeholder {
   color: #b4b3b3;
-}
-
-.hide {
-  display: none;
 }
