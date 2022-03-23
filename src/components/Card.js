@@ -3,40 +3,25 @@ import OnEvent from "react-onevent";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus, faMinus } from '@fortawesome/free-solid-svg-icons';
 
-const Card = ({ students, updateTags }) => {
+const Card = ({ students, updateTags, tags, averageGrade }) => {
 
-
-    // Holding tags to be displayed
-    const [ tags, setTags ] = useState([]);
-
-    // are the grades showing or not
+    // Grades status
     const [ status, setStatus ] = useState(true)
 
     let grades = students.grades;
 
-    // Finding the average of the grades
-    let avg = 0;
-    function averageGrade(item){
-        let total = 0;
-        for(let i = 0; i < item.length; i++){
-            total += parseFloat(item[i]);
-        }
-        avg = total / item.length;
-    }
-    averageGrade(students.grades)
+
+    
 
     // changing if the grades are showing or not
     function changeStatus(){
         setStatus(!status)
     }
 
-    // adding a tag the list
     function addTag(e){
         const { value } = e.target;
-        if(e.key == 'Enter'){
-            setTags(prevTags => [...prevTags, value])
-            updateTags(value)
-        }
+        updateTags(students.id, value)
+        e.target.value = '';
     }
 
   return (
@@ -49,25 +34,25 @@ const Card = ({ students, updateTags }) => {
                 <p id="email">Email: {students.email}</p>
                 <p id="company">Company: {students.company}</p>
                 <p id="skill"> Skill: {students.skill}</p>
-                <p id="average" className="spacing" >Average: {avg}%</p>
+                <p id="average" className="spacing" >Average: {window.onload = averageGrade(grades)}%</p>
 
 
-                {/* Looping through each grade */}
                 <div className={status ? "grades hide spacing": "grades spacing"}>
                     {grades.map((element, index) => {
                         return <p key={index}>Test {index + 1}:  <span className="grade">{element}%</span></p>
                         })}
                 </div>
 
-                {/* Looping through each tag */}
+                
                 <div id="tags" className="spacing" >
-                    {
-                    tags &&
-                    tags.map((tag, index) => <p key={index}>{tag}</p>)}
+                    {/* {
+                    tags&&
+                    tags.map((tag, index) => <p key={index}>{tag}</p>)} */}
+
                 </div>
 
-                <OnEvent enter={e => setTags(prevTags => [...prevTags, e.target.value])} >
-                    <input onKeyPress={addTag} className="tag" type="text" placeholder="Add a tag" />
+                <OnEvent enter={addTag} >
+                    <input className="tag" type="text" placeholder="Add a tag" />
                 </OnEvent>
 
             </div>

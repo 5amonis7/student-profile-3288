@@ -1,32 +1,29 @@
 import { useEffect, useState } from 'react';
 import './App.css';
 import Card from './components/Card';
-import SearchName from './components/SearchName';
-import SearchTag from './components/SearchTag';
+import Search from './components/Search';
 
 
 function App() {
 
-  window.onload = Request()
+
+  // Test
+  const [ test, setTest ] = useState([])
+
 
   // Value of the name input 
   const [ nameTerm, setNameTerm ] = useState('')
 
-  // value of the tags input 
-  const [ tagsTerm, setTagsTerm ] = useState('')
-
-  // All the current tags
   const [ tags, setTags ] = useState([])
+  // console.log(tags)
 
   // Holding info avout each person
   const [ data, setData ] = useState([])
 
-  
+  let info = {items: test};
 
-
-  // Requesting the API info
-  function Request(){
-  useEffect(() => {
+  // API Data
+  window.onload = useEffect(() => {
     fetch("https://api.hatchways.io/assessment/students")
       .then(res => res.json())
       .then(
@@ -34,24 +31,68 @@ function App() {
           setData(result.students)
         }
       )
+      .then(() => {
+        info = {items: [{ students: [data]}]};
+        setTest(info)
+      })
       
   }, [])
+
+  
+
+
+  function updateTags(a, b){
+
+    if(tags.hasOwnProperty(a)){
+      setTags((prevTags) => {
+        return {
+          ...prevTags,
+          [a]: Array.isArray(prevTags[a]) ? [...prevTags[a], b] : [prevTags[a], b]
+        }
+      })
+    } else {
+      setTags((prevTags) => {
+        return {
+          ...prevTags,
+          [a]: b
+        }
+      })
+    }
+}
+console.log(tags)
+
+function combine(){
+  // for(let i = 0; i < tags[1].length; i++){
+  // if(info[i].hasOwnProperty(tags)){
+  //   console.log('yes')
+  // }else{
+  //   console.log('no')
+  //   info[i].tags.append(tags[1])
+  // }
+  // console.log(info)
+// }
+  // info.forEach( (object, index) => {
+  //   object.tags = [tags[index]]
+  // })
+  // for(let i = 0; i < tags.length; i++){
+  //   for(let j = 0; j < info.length; j++){
+  //     info[j].tags = tags[i]
+  //   }
+  // }
+  // console.log(info)
+  //  setTest(info)
 }
 
-// Updating the value of the tags
-function updateTags(e){
-  setTags(prevTags => [...prevTags, e])
-}
-
-// Changing the value of the search term used to filter by name 
-  function updateName(item){
-    setNameTerm(item)
-  }
-
-  // changing the value of the search term used to filter by tags 
-  function updateTag(item){
-    setTagsTerm(item)
-  }
+  
+    function averageGrade(item){
+      let avg = 0;
+      let total = 0;
+      for(let i = 0; i < item.length; i++){
+            total += parseFloat(item[i]);
+        }
+      avg = total / item.length;
+      return avg;
+    }
 
 
   return (
@@ -59,11 +100,13 @@ function updateTags(e){
       <div id="container" >
         <div id="collection" >
 
-          {/* Name search input */}
-          <SearchName update={updateName} />
+          
+          <Search holder= 'Search by Name' />
 
-          {/* Tag search input */}
-          <SearchTag update={updateTag} />
+          
+          <Search holder='Search by Tag' />
+
+
           <div id="students">
             {data.filter(val => {
               if(nameTerm === ""){
@@ -75,7 +118,7 @@ function updateTags(e){
                 val.lastName.toLowerCase().includes(nameTerm.toLowerCase())
                 ){
                 return val
-              }}).map((student) => <Card updateTags={updateTags} students={student} key={student.id} />)}
+              }}).map((student) =>  <Card onChange={combine} averageGrade={averageGrade} updateTags={updateTags} students={student} key={student.id} />)}
 
           </div>
         </div>
